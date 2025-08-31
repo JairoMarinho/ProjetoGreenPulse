@@ -1,160 +1,217 @@
-# 🌱 GreenPulse
+#  GreenPulse
 
 ![Python](https://img.shields.io/badge/Python-3.10+-blue?logo=python)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-green?logo=fastapi)
 ![Ethereum](https://img.shields.io/badge/Ethereum-Web3.py-purple?logo=ethereum)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
-**GreenPulse** é uma aplicação backend construída com **FastAPI** e **SQLite**, projetada para gerenciar usuários e posts, agora integrada ao **Ethereum** para fornecer rastreabilidade imutável de dados e integração com carteiras digitais.  
+**GreenPulse** é uma aplicação backend construída com **FastAPI** e **SQLite**, projetada para gerenciar usuários e posts, agora integrada ao **Ethereum** para fornecer **rastreabilidade imutável de dados** e integração com carteiras digitais.  
 
 A API expõe endpoints REST para criação e consulta de **usuários**, **posts** e suas respectivas interações com a blockchain.
 
+---
 
+##  Estrutura do Projeto
 
-# 📂 Estrutura do Projeto
+```
 
 GreenPulse/
 │
 ├─ app/
-│ ├─ main.py # Inicializa a aplicação FastAPI
-│ ├─ models.py # Modelos ORM (Users, Posts com wallet/tx)
-│ ├─ schemas.py # Schemas Pydantic para validação
-│ ├─ crud.py # Operações CRUD do banco
-│ ├─ database.py # Conexão com banco SQLite
-│ ├─ blockchain.py # Conexão e funções com Ethereum
-│ └─ init_db.py # Script para criar as tabelas
+│  ├─ main.py          # Inicializa a aplicação FastAPI
+│  ├─ models.py        # Modelos ORM (Users, Posts com wallet/tx)
+│  ├─ schemas.py       # Schemas Pydantic para validação
+│  ├─ crud.py          # Operações CRUD do banco
+│  ├─ database.py      # Conexão com banco SQLite
+│  ├─ blockchain.py    # Conexão e funções com Ethereum
+│  └─ init\_db.py       # Script para criar as tabelas
 │
-├─ greenpulse.db # Banco SQLite (desenvolvimento)
-├─ requirements.txt # Dependências do projeto
-└─ .env # Variáveis de ambiente
+├─ greenpulse.db       # Banco SQLite (desenvolvimento)
+├─ requirements.txt    # Dependências do projeto
+└─ .env                # Variáveis de ambiente
 
+````
 
 ---
 
-# ⚙️ Configuração do Ambiente
+##  Configuração do Ambiente
 
-Clone o repositório:
-
+### 1️⃣ Clone o repositório
 ```bash
 git clone https://github.com/Tapiocamanz/GreenPulse.git
 cd GreenPulse
+````
 
-Crie e ative um ambiente virtual:
+### 2️⃣ Crie e ative um ambiente virtual
 
+```bash
 python -m venv venv
+
 # Windows
 venv\Scripts\activate
+
 # Linux/Mac
 source venv/bin/activate
-Instale as dependências:
+```
 
+### 3️⃣ Instale as dependências
+
+```bash
 pip install -r requirements.txt
-🗄 Configuração do Banco de Dados
-O banco padrão é SQLite (greenpulse.db).
+```
 
+---
+
+## Banco de Dados
+
+O banco padrão é **SQLite** (`greenpulse.db`).
+Crie as tabelas com:
+
+```bash
 python -m app.init_db
-Esse comando cria as tabelas users e posts.
+```
 
-🔗 Integração com Ethereum
-O projeto utiliza web3.py para comunicação com a rede Ethereum.
+Esse comando cria as tabelas **users** e **posts**.
 
-No arquivo .env configure:
+---
 
+##  Integração com Ethereum
+
+O projeto utiliza **Web3.py** para comunicação com a rede Ethereum.
+
+No arquivo **`.env`**, configure:
+
+```
 ETH_NODE_URL=https://mainnet.infura.io/v3/SUA_API_KEY
+```
+
 Verificação de conexão:
 
+```python
 from app.blockchain import web3
-
 print(web3.is_connected())  # True se conectado
-🧩 Modelos (ORM)
-User
-id: inteiro (PK)
+```
 
-name: string
+---
 
-wallet_address: endereço Ethereum vinculado
+##  Modelos (ORM)
 
-Post
-id: inteiro (PK)
+### User
 
-title: string
+* `id`: inteiro (PK)
+* `name`: string
+* `wallet_address`: endereço Ethereum vinculado
 
-user_id: FK → User.id
+### Post
 
-tx_hash: hash da transação Ethereum
+* `id`: inteiro (PK)
+* `title`: string
+* `user_id`: FK → User.id
+* `tx_hash`: hash da transação Ethereum
 
-📦 Schemas (Pydantic)
-UserCreate → name, wallet_address
+---
 
-PostCreate → title, user_id
+##  Schemas (Pydantic)
 
-User / Post → retornam dados incluindo id e tx_hash
+* **UserCreate** → `name`, `wallet_address`
+* **PostCreate** → `title`, `user_id`
+* **User / Post** → retornam dados incluindo `id` e `tx_hash`
 
-🔧 CRUD com Blockchain
-Ao criar um Post, é gerado e armazenado um hash de transação Ethereum (tx_hash).
+---
 
-Usuários possuem um endereço Ethereum (wallet_address).
+##  CRUD com Blockchain
 
-🚀 Rodando a Aplicação
+* Ao criar um **Post**, é gerado e armazenado um **hash de transação Ethereum (`tx_hash`)**.
+* Usuários possuem um **endereço Ethereum (`wallet_address`)**.
+
+---
+
+##  Rodando a Aplicação
+
 Inicie o servidor com:
 
+```bash
 uvicorn app.main:app --reload
-API → http://127.0.0.1:8000
+```
 
-Swagger UI → http://127.0.0.1:8000/docs
+* API → [http://127.0.0.1:8000](http://127.0.0.1:8000)
+* Swagger UI → [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+* ReDoc → [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
 
-ReDoc → http://127.0.0.1:8000/redoc
+---
 
-📌 Endpoints da API
-Usuários (/users)
-GET /users → Lista usuários
+##  Endpoints da API
 
-POST /users → Cria usuário
+###  Usuários (`/users`)
 
-Exemplo:
+* **GET /users** → Lista usuários
+* **POST /users** → Cria usuário
 
+Exemplo (POST):
+
+```json
 {
   "name": "Aldebaran",
   "wallet_address": "0x1234abcd5678ef..."
 }
-Posts (/posts)
-GET /posts → Lista posts
+```
 
-POST /posts → Cria post e registra hash no Ethereum
+---
 
-Exemplo:
+###  Posts (`/posts`)
 
+* **GET /posts** → Lista posts
+* **POST /posts** → Cria post e registra hash no Ethereum
+
+Exemplo (POST):
+
+```json
 {
   "title": "Meu primeiro post blockchain",
   "user_id": 1
 }
+```
+
 Resposta:
 
+```json
 {
   "id": 1,
   "title": "Meu primeiro post blockchain",
   "user_id": 1,
   "tx_hash": "0xabc123..."
 }
-Blockchain Extra
-GET /users/{id}/balance → Consulta saldo da carteira do usuário
+```
 
-GET /posts/{id}/verify → Verifica existência do tx_hash na rede Ethereum
+---
 
-✅ Testando a API
-Abra o Swagger UI em:
-👉 http://127.0.0.1:8000/docs
+###  Blockchain Extra
+
+* **GET /users/{id}/balance** → Consulta saldo da carteira do usuário
+* **GET /posts/{id}/verify** → Verifica existência do `tx_hash` na rede Ethereum
+
+---
+
+##  Testando a API
+
+Abra o **Swagger UI** em:
+ [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 
 Teste criação de usuários/posts e valide a integração blockchain.
 
-💡 Observações
-SQLite recomendado apenas para desenvolvimento.
+---
 
-Produção → usar PostgreSQL ou MySQL.
+##  Observações
 
-Pode-se estender para autenticação via assinatura Ethereum (login com carteira).
+* **SQLite** recomendado apenas para desenvolvimento.
+* Produção → usar **PostgreSQL** ou **MySQL**.
+* Pode-se estender para **autenticação via assinatura Ethereum** (login com carteira).
+* Futuramente, o sistema pode migrar para **Smart Contracts completos**.
 
-Futuramente, o sistema pode migrar para Smart Contracts completos.
+---
 
-📜 Licença
-Este projeto está sob a licença MIT – veja o arquivo LICENSE para mais detalhes.
+##  Licença
+
+Este projeto está sob a licença **MIT** – veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+```
